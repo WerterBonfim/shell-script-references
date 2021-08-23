@@ -1,0 +1,267 @@
+Curso de shell script
+
+Primeiro shell mashey, 1975 e 1977
+
+
+Commando echo: imprime na tela, a saida padrão
+STDOUT = Saida padrão
+
+A diferença em aspas linhas e aspas duplas
+a aspas limples preserva variaveis
+as aspas duplas concatena variaveis
+
+echo 'O conteudo SHELL é $SHELL'
+echo "O conteudo SHELL é $SHELL"
+
+forma statica
+#!/bin/bash
+
+forma dinamica
+#!/usr/bin/env bash
+
+para executar sem permissão basta chamar na linha 
+de comando: bash nome-arquivo.sh
+
+para dar permissão de execução: chmod +x nome-arquivo.sh
+
+
+variaveis
+
+nome="sou uma variavel"
+
+debugar o shell
+
+set -x
+
+
+Variaveis de ambiente global:
+
+USER: Indica qual usuário esta logado no Emulador/Terminal
+HOME: Indica qual a Home do Usuário esta logando
+SHELL: Indica qual Shell está sendo utilizado
+PATH: Lista de vários diretórios onde se encontram programs executáveis
+
+ps = lista tty
+
+export nome_variavel = exporta a variavel, essa
+variavel pode ser recuperada em sub sessoes
+
+$UID = id do usuario
+
+usuario root tem seu id 0
+
+/etc/profile = esse é o primeiro arquivo a ser
+carregado pelo root. 
+
+Descobrir depois qual é o primeiro arquivo a 
+ser carregando no clearlinux
+
+com comando which procura por programas executaveis,
+ele olha para a variavel $PATH
+
+para listar as variaveis globais, o comando env ou printenv
+
+Constantes:
+
+# pode ser alterada
+variavel_defina="ola"
+
+declare -r nome_variavel="constante"
+# não pode ser mais alterada
+declare -r variavel_defina
+
+readonly variavel_nome="sou readonly"
+
+
+`` e $() retornam o conteudo do comando, exemplo:
+listagem=`ls`
+listagem=$(ls)
+
+stdin = entrada padrão = teclado ou voz
+
+# armazenda o que o usuario digita na 
+# variavel nome
+read nome
+
+
+comando test
+se o resultado é 0, significa sucesso 
+
+Operadores de string
+== é igual
+!= diferente
+-n length não é 0
+-z lenght é zero
+
+
+shell trabalha com status de saida: 0 1, 55...
+
+ls && pwd
+
+se o status de said do ls é igual a 0
+o segundo comando (pwd) sera executado
+
+test "A" != "A" && echo "É igual" || echo "É diferente"
+
+o caracteres ; executa comando em sequencia
+
+esse tres comandos seram executandos,
+independente do status de saida
+apt update ; apt upgrade ; apt install htop
+
+para agrupar comandos
+{ echo "um texto" ; pwd ;  }
+
+
+atenção $(comando) é executando em um sub shell
+{ pwd ; echo "asdf" } é executado no mesmo shell
+
+
+read -p "Digite algo" continuar
+continuar=${continuar^^} # tranforma em upper case
+
+
+use [[]] ao do test
+
+[[ "A" == "A"]] && echo "São iguais" || echo "são diferentes"
+
+-lt = less than = é menor que
+-le = less equal = é menor ou igual
+
+-gt = greater then = é maior que
+-ge = greater equal = é maior ou igual
+
+-eq = equal = igual
+-ne = not equal = não é igual
+
+
+Verificações
+
+-d = é um diretorio
+[[ -d "Musicas" ]] && echo "Diretorio existe"
+
+-e = verifica se um arquivo existe
+[[ -e "app.sh" ]] && echo "Arquivo existe"
+
+-r = Verifica se o arquivo tem permissão de leitura
+-w = Verifica se o arquivo tem permissão de escrita
+-x = Verifica se o arquivo tem permissão para ser executado
+
+[[ -x "quarto.sh" ]] && 
+    echo "Sim tem permissão de execução" ||
+    echo "Não tem permissão de execução"
+
+-L = Verifica se é um link simbolico
+-O = O dono do arquivo é o usuario logado atualmente
+-f = é um arquivo nome_variavel
+
+-ot = Verifica se o arquivo é mais antigo (OlderThan)
+-nt = Verifica se o arquivo é mais novo (NewerThan)
+
+-b = Verifica se é um dispositivo em bloco
+-c = Verifica se é um dispositivo de caractere
+
+
+Operador de negação !
+
+[[ -e "/home/werter" ]] && echo "Diretorio werter existe"
+
+[[ ! -e "/home/werterr" ]] && echo "Diretorio werterr não existe"
+
+
+Operadores logicos
+
+if condição 
+then
+    bloco
+else
+    bloco
+fi
+
+
+if
+then
+elif
+else
+fi
+
+
+# stric mode
+set -euo pipefail
+# -e intolerante a erros
+# -u verifica case sensitve do nome das variaveis
+# -o pipefail Essa configuração evita que erros em um pipeline sejam mascarados. EX:
+# >grep some-string /non/existent/file | sort
+# grep: /non/existent/file: No such file or directory
+# >echo $?
+# 0
+
+
+wttr.in
+
+
+verficação direta
+
+[[ "$v" ]] || {
+    echo "vai sair" 
+    exit 1
+}
+
+
+Sintaxe CASE
+
+case "variavel" in 
+    nome)   echo "resposta" ;;
+    nome2)  
+        echo "reposta w"
+    ;;
+
+esac
+
+
+case "$nome" in
+joao | Joao) echo "E ai seu joão" ;;
+liz | Liz) echo "E ai lizandropolis" ;;
+werter)
+    echo "Sou o ADM"
+    echo "Sou eu"
+    ;;
+[0-9]) echo "Digitou um numero" ;;
+*) echo "Pessoa não encontrada" ;;
+esac
+
+
+Parametros posicionais
+
+$0 - Sempre indica o nome do programas
+$1 -
+$2 -
+
+backup --origem /var/teste --destino /var/bakup
+
+Apartir do nono parametro, deve se usar chaves
+echo "10 ${10}"
+
+
+Segundo grupo
+
+$# - Número todal de parâmetros passados
+$* - Todos os parâmetros com uma string única
+$@ - Todos parametros com váriaveis string protegidas
+    egrep utiliza essa abordagem: exec grep -E "$@"
+
+IFS Internal field separator
+
+
+Terceiro grupo dos parametros opcionais
+
+$$ Número do PID do processo atual (Do próprio Script)
+$! Número do PID do útilmo JOB em segundo plano
+$_ Último argumetno do útilmo comando executado
+$? Mostra código de retonro do útilmo comando executado
+
+
+Modulo 2 
+
+
+

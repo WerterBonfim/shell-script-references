@@ -19,6 +19,9 @@ set -euo pipefail
     exit 1
 }
 
+# Atribui um valor padrão para um argumento
+[ -z "${1-}" ] && set -- ""
+
 # Verifica se um app esta disponivel
 [[ $(type -P dialog) ]] || {
     echo "Necessido do dialog, para continuar"

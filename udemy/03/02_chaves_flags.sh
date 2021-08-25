@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# stric mode
-set -euo pipefail
-
 #
 # listar_usuarios.sh
 #
@@ -10,7 +7,7 @@ set -euo pipefail
 # Autor:        Werter Bonfim
 # Manutenção:   Werter Bonfim
 # Site:         https://github.com/WerterBonfim
-# Data:         01-01-2021
+# Data:         25-08-2021
 # Versão:       1.0.0
 
 # Exit codes
@@ -21,7 +18,7 @@ set -euo pipefail
 
 #
 # ------------------------------------------------------------------------ #
-#  Este programa irá... 
+#  Este programa irá...
 #
 #  Exemplos:
 #      $ ./listar_usuarios.sh -d 1
@@ -37,12 +34,9 @@ set -euo pipefail
 # Testado em:
 #   bash 4.4.19
 # ------------------------------------------------------------------------ #
-# Agradecimentos:
-#
-# 	Joãozinho - Encontrou um bug na parte de login.
-#	Mariazinha - Enviou uma sugestão de adicionar o -h.
-# ------------------------------------------------------------------------ #
 
+# stric mode
+set -euo pipefail
 
 # ------------------------------- VARIÁVEIS ------------------------------ #
 usuarios=""
@@ -59,30 +53,13 @@ menuInterativo="
 
 # ------------------------------------------------------------------------ #
 
-
 # ------------------------------- EXECUÇÃO ----------------------------------------- #
 
+[ -z "${1-}" ] && set -- ""
 
-[ -z "${1-}" ] && {
-    
-    echo "$usuarios"
-    exit 0
-}
-
-if [ "$1" = "-h" ]; then
-    echo "$menuInterativo"
-    exit 0
-fi
-
-if [ "$1" = "-v" ]; then
-    echo "Versão: $versao"
-    exit 0
-fi
-
-if [ "$1" = "-s" ]; then
-    echo "$usuarios" | sort
-    exit 0
-fi
-
-
-
+case "$1" in
+-h) echo "$menuInterativo" ;;
+-v) echo "Versão: $versao" ;;
+-s) echo "$usuarios" | sort ;;
+*) echo "$usuarios" ;;
+esac

@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# stric mode
+set -euo pipefail
+
 #
 # listar_usuarios.sh
 #
@@ -25,11 +29,8 @@
 # ------------------------------------------------------------------------ #
 # Histórico:
 #
-#   v1.0 00/00/00, Werter:
-#       - Início do programa
-#       - Conta com a funcionalidade X
-#   v1.1 00/00/0000, Werter:
-#       - Alterado parametro XXXXX
+#   v1.0 25/08/21, Werter:
+#       - Adicionando -s, -h, e -v
 # ------------------------------------------------------------------------ #
 # Testado em:
 #   bash 4.4.19
@@ -43,12 +44,43 @@
 
 # ------------------------------- VARIÁVEIS ------------------------------ #
 usuarios=""
-usuario="$(cat /etc/passwd | cut -d : -f 1)"
+usuarios="$(cat /etc/passwd | cut -d : -f 1)"
+versao="v1.0"
+
+menuInterativo="
+    $0 - [OPÇÕES]
+
+    -h - Menu de ajuda
+    -v - Versão do programa
+    -s - Ordernar a saída
+"
 
 # ------------------------------------------------------------------------ #
 
 
 # ------------------------------- EXECUÇÃO ----------------------------------------- #
 
-# stric mode
-set -euo pipefail
+
+[ -z "${1-}" ] && {
+    
+    echo "$usuarios"
+    exit 0
+}
+
+if [ "$1" = "-h" ]; then
+    echo "$menuInterativo"
+    exit 0
+fi
+
+if [ "$1" = "-v" ]; then
+    echo "Versão: $versao"
+    exit 0
+fi
+
+if [ "$1" = "-s" ]; then
+    echo "$usuarios" | sort
+    exit 0
+fi
+
+
+
